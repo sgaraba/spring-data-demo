@@ -1,0 +1,12 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: validate
+  application:
+    name: spring-data-demo
+  liquibase:
+    change-log: classpath:/db/changelog/master.xml
+  datasource:
+    url: jdbc:postgresql://localhost:5433/p5-demo
+    username: postgres
+    password: postgres
