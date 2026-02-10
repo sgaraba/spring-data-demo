@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="20260210-01-create-users" author="esempla">
+        <createTable tableName="user_entity">
+            <column name="id" type="bigserial" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="user_name" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="first_name" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_name" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="email" type="varchar(255)"/>
+            <column name="phone" type="varchar(50)"/>
+        </createTable>
+
+        <addUniqueConstraint
+                tableName="user_entity"
+                columnNames="email"
+                constraintName="uk_users_email"/>
+
+    </changeSet>
+
+    <changeSet id="20260210-02-load-users" author="esempla">
+        <loadData
+                file="classpath:/db/changelog/data/users.csv"
+                separator=","
+                tableName="user_entity"
+                encoding="UTF-8"
+                quotchar="&quot;">
+            <column name="id" type="numeric"/>
+            <column name="user_name" type="string"/>
+            <column name="first_name" type="string"/>
+            <column name="last_name" type="string"/>
+            <column name="email" type="string"/>
+            <column name="phone" type="string"/>
+        </loadData>
+    </changeSet>
+
+</databaseChangeLog>
