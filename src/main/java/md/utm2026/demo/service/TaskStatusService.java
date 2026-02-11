@@ -2,8 +2,8 @@ package md.utm2026.demo.service;
 
 import md.utm2026.demo.domain.TaskStatusEntity;
 import md.utm2026.demo.repository.TaskStatusRepository;
-import md.utm2026.demo.service.dto.CreateTaskStatusEntityDto;
-import md.utm2026.demo.service.dto.TaskStatusEntityDto;
+import md.utm2026.demo.web.dto.CreateTaskStatusEntityDto;
+import md.utm2026.demo.web.dto.TaskStatusEntityDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;

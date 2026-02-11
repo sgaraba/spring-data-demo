@@ -1,9 +1,9 @@
 package md.utm2026.demo.web;
 
 import md.utm2026.demo.service.TaskStatusService;
-import md.utm2026.demo.service.dto.CreateTaskStatusEntityDto;
-import md.utm2026.demo.service.dto.PageResponse;
-import md.utm2026.demo.service.dto.TaskStatusEntityDto;
+import md.utm2026.demo.web.dto.CreateTaskStatusEntityDto;
+import md.utm2026.demo.web.dto.PageResponse;
+import md.utm2026.demo.web.dto.TaskStatusEntityDto;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;

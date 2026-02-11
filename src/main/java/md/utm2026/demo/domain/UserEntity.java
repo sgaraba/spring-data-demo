@@ -1,14 +1,19 @@
 package md.utm2026.demo.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
+import java.util.List;
 import java.util.Objects;
 
+//@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Entity
 @Table(name = "user_entity")
 public class UserEntity {
@@ -31,6 +36,10 @@ public class UserEntity {
 
     @Column(name = "phone")
     private String phone;
+
+    @OneToMany(mappedBy = "assignee", fetch = FetchType.LAZY)
+    @JsonIgnoreProperties(value = {"assignee"}, allowSetters = true)
+    private List<TaskEntity> tasks;
 
     public UserEntity() {
     }
@@ -77,6 +86,14 @@ public class UserEntity {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public List<TaskEntity> getTasks() {
+        return tasks;
+    }
+
+    public void setTasks(List<TaskEntity> tasks) {
+        this.tasks = tasks;
     }
 
     @Override

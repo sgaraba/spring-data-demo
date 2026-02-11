@@ -1,4 +1,4 @@
-package md.utm2026.demo.service.dto;
+package md.utm2026.demo.web.dto;
 
 import md.utm2026.demo.domain.UserEntity;
 

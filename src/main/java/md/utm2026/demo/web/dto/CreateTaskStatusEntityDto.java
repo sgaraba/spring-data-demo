@@ -1,4 +1,4 @@
-package md.utm2026.demo.service.dto;
+package md.utm2026.demo.web.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

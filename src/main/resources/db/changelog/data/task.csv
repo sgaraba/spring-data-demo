@@ -1,0 +1,7 @@
+id,title,description,task_status_id,assignee_id
+1,Setup project,Initialize repo and base configuration,1,1
+2,Design schema,Create initial database schema,2,2
+3,API endpoints,Implement CRUD endpoints,2,3
+4,Write tests,Add service and controller tests,1,4
+5,Release prep,Prepare deployment checklist,3,5
+6,Backlog review,Review backlog with team,4,

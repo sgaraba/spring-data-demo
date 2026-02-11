@@ -1,10 +1,9 @@
 package md.utm2026.demo.web;
 
-import md.utm2026.demo.domain.UserEntity;
-import md.utm2026.demo.service.UserService;
-import md.utm2026.demo.web.dto.CreateUserEntityDto;
+import md.utm2026.demo.domain.TaskEntity;
+import md.utm2026.demo.service.TaskService;
+import md.utm2026.demo.web.dto.CreateTaskEntityDto;
 import md.utm2026.demo.web.dto.PageResponse;
-import md.utm2026.demo.web.dto.UserEntityDto;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -18,59 +17,68 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import md.utm2026.demo.web.dto.TaskEntityDto;
 
 @RestController
-@RequestMapping("/api/users")
-public class UserController {
+@RequestMapping("/api/tasks")
+public class TaskController {
 
-    private final UserService userService;
+    private final TaskService taskService;
 
-    public UserController(UserService userService) {
-        this.userService = userService;
+    public TaskController(TaskService taskService) {
+        this.taskService = taskService;
     }
 
     @GetMapping
-    public PageResponse<UserEntityDto> getAll(Pageable pageable) {
-        return userService.findAll(pageable);
+    public PageResponse<TaskEntity> getAll(Pageable pageable) {
+        var page = taskService.findAll(pageable);
+        return new PageResponse<>(
+                page.getContent(),
+                page.getNumber(),
+                page.getSize(),
+                page.getTotalElements(),
+                page.getTotalPages()
+        );
     }
 
-   // @GetMapping("/{id}")
-    public ResponseEntity<UserEntityDto> getDtoById(@PathVariable Long id) {
-        return userService.findDtoById(id)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
-    }
+//    @GetMapping("/{id}")
+//    public ResponseEntity<TaskEntityDto> getById(@PathVariable Long id) {
+//        return taskService.findDtoById(id)
+//                .map(ResponseEntity::ok)
+//                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+//    }
+
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserEntity> getById(@PathVariable Long id) {
-        return userService.findById(id)
+    public ResponseEntity<TaskEntity> getById(@PathVariable Long id) {
+        return taskService.findById(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
     @PostMapping
-    public ResponseEntity<UserEntityDto> create(@Valid @RequestBody CreateUserEntityDto user) {
-        UserEntityDto created = userService.create(user);
+    public ResponseEntity<TaskEntityDto> create(@Valid @RequestBody CreateTaskEntityDto task) {
+        TaskEntityDto created = taskService.create(task);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserEntityDto> update(@PathVariable Long id, @Valid @RequestBody CreateUserEntityDto user) {
-        return userService.update(id, user)
+    public ResponseEntity<TaskEntityDto> update(@PathVariable Long id, @Valid @RequestBody CreateTaskEntityDto task) {
+        return taskService.update(id, task)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<UserEntityDto> patch(@PathVariable Long id, @RequestBody CreateUserEntityDto user) {
-        return userService.patch(id, user)
+    public ResponseEntity<TaskEntityDto> patch(@PathVariable Long id, @RequestBody CreateTaskEntityDto task) {
+        return taskService.patch(id, task)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        boolean deleted = userService.delete(id);
+        boolean deleted = taskService.delete(id);
         if (!deleted) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }

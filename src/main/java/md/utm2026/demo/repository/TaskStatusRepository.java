@@ -1,7 +1,7 @@
 package md.utm2026.demo.repository;
 
 import md.utm2026.demo.domain.TaskStatusEntity;
-import md.utm2026.demo.service.dto.TaskStatusEntityDto;
+import md.utm2026.demo.web.dto.TaskStatusEntityDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,7 +13,7 @@ import java.util.Optional;
 public interface TaskStatusRepository extends JpaRepository<TaskStatusEntity, Long> {
 
     @Query("""
-            select new md.utm2026.demo.service.dto.TaskStatusEntityDto(
+            select new md.utm2026.demo.web.dto.TaskStatusEntityDto(
                 ts.id,
                 ts.name,
                 ts.active
@@ -23,7 +23,7 @@ public interface TaskStatusRepository extends JpaRepository<TaskStatusEntity, Lo
     Page<TaskStatusEntityDto> findAllDtos(Pageable pageable);
 
     @Query("""
-            select new md.utm2026.demo.service.dto.TaskStatusEntityDto(
+            select new md.utm2026.demo.web.dto.TaskStatusEntityDto(
                 ts.id,
                 ts.name,
                 ts.active

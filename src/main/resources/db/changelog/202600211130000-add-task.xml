@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="20260211-03-create-task" author="esempla">
+        <createTable tableName="task">
+            <column name="id" type="bigserial" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="title" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="varchar(1000)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="task_status_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="assignee_id" type="bigint"/>
+        </createTable>
+
+        <addForeignKeyConstraint
+                baseTableName="task"
+                baseColumnNames="task_status_id"
+                referencedTableName="task_status"
+                referencedColumnNames="id"
+                constraintName="fk_task_status"/>
+
+        <addForeignKeyConstraint
+                baseTableName="task"
+                baseColumnNames="assignee_id"
+                referencedTableName="user_entity"
+                referencedColumnNames="id"
+                constraintName="fk_task_assignee"/>
+    </changeSet>
+
+    <changeSet id="20260211-04-load-task" author="esempla">
+        <loadData
+                file="classpath:/db/changelog/data/task.csv"
+                separator=","
+                tableName="task"
+                encoding="UTF-8"
+                quotchar="&quot;">
+            <column name="id" type="numeric"/>
+            <column name="title" type="string"/>
+            <column name="description" type="string"/>
+            <column name="task_status_id" type="numeric"/>
+            <column name="assignee_id" type="numeric"/>
+        </loadData>
+    </changeSet>
+
+</databaseChangeLog>
