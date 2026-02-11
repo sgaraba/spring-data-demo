@@ -1,9 +1,9 @@
 package md.utm2026.demo.web;
 
 import md.utm2026.demo.service.UserService;
-import md.utm2026.demo.web.dto.CreateUserEntityDto;
-import md.utm2026.demo.web.dto.PageResponse;
-import md.utm2026.demo.web.dto.UserEntityDto;
+import md.utm2026.demo.service.dto.CreateUserEntityDto;
+import md.utm2026.demo.service.dto.PageResponse;
+import md.utm2026.demo.service.dto.UserEntityDto;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/api/users")
 public class UserController {
 
     private final UserService userService;
@@ -30,14 +30,7 @@ public class UserController {
 
     @GetMapping
     public PageResponse<UserEntityDto> getAll(Pageable pageable) {
-        var page = userService.findAll(pageable);
-        return new PageResponse<>(
-                page.getContent(),
-                page.getNumber(),
-                page.getSize(),
-                page.getTotalElements(),
-                page.getTotalPages()
-        );
+        return userService.findAll(pageable);
     }
 
     @GetMapping("/{id}")

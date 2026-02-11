@@ -1,4 +1,4 @@
-package md.utm2026.demo.web.dto;
+package md.utm2026.demo.service.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

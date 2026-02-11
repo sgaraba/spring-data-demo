@@ -1,4 +1,4 @@
-package md.utm2026.demo.web.dto;
+package md.utm2026.demo.service.dto;
 
 import java.util.List;
 

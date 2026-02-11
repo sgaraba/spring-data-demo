@@ -2,8 +2,9 @@ package md.utm2026.demo.service;
 
 import md.utm2026.demo.repository.UserRepository;
 import md.utm2026.demo.domain.UserEntity;
-import md.utm2026.demo.web.dto.CreateUserEntityDto;
-import md.utm2026.demo.web.dto.UserEntityDto;
+import md.utm2026.demo.service.dto.CreateUserEntityDto;
+import md.utm2026.demo.service.dto.PageResponse;
+import md.utm2026.demo.service.dto.UserEntityDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -23,9 +24,16 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public Page<UserEntityDto> findAll(Pageable pageable) {
+    public PageResponse<UserEntityDto> findAll(Pageable pageable) {
         LOGGER.info("Fetching users page={} size={}", pageable.getPageNumber(), pageable.getPageSize());
-        return userRepository.findAllDtos(pageable);
+        var page = userRepository.findAllDtos(pageable);
+        return new PageResponse<>(
+                page.getContent(),
+                page.getNumber(),
+                page.getSize(),
+                page.getTotalElements(),
+                page.getTotalPages()
+        );
     }
 
     public Optional<UserEntityDto> findById(Long id) {

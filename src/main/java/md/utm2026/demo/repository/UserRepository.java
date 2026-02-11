@@ -1,7 +1,7 @@
 package md.utm2026.demo.repository;
 
 import md.utm2026.demo.domain.UserEntity;
-import md.utm2026.demo.web.dto.UserEntityDto;
+import md.utm2026.demo.service.dto.UserEntityDto;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -13,7 +13,7 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<UserEntity, Long> {
 
     @Query("""
-            select new md.utm2026.demo.web.dto.UserEntityDto(
+            select new md.utm2026.demo.service.dto.UserEntityDto(
                 u.id,
                 u.userName,
                 u.firstName,
@@ -26,7 +26,7 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     Page<UserEntityDto> findAllDtos(Pageable pageable);
 
     @Query("""
-            select new md.utm2026.demo.web.dto.UserEntityDto(
+            select new md.utm2026.demo.service.dto.UserEntityDto(
                 u.id,
                 u.userName,
                 u.firstName,
