@@ -1,15 +1,14 @@
 package md.utm2026.demo.service;
 
-import md.utm2026.demo.repository.UserRepository;
 import md.utm2026.demo.domain.UserEntity;
+import md.utm2026.demo.repository.UserRepository;
 import md.utm2026.demo.service.dto.CreateUserEntityDto;
 import md.utm2026.demo.service.dto.PageResponse;
 import md.utm2026.demo.service.dto.UserEntityDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 

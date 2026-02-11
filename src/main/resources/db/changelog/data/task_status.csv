@@ -1,0 +1,6 @@
+id,name,active
+1,Open,true
+2,In Progress,true
+3,Blocked,true
+4,Done,true
+5,Archived,false

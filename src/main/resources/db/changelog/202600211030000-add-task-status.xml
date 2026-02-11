@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="20260211-01-create-task-status" author="esempla">
+        <createTable tableName="task_status">
+            <column name="id" type="bigserial" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="active" type="boolean">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="20260211-02-load-task-status" author="esempla">
+        <loadData
+                file="classpath:/db/changelog/data/task_status.csv"
+                separator=","
+                tableName="task_status"
+                encoding="UTF-8"
+                quotchar="&quot;">
+            <column name="id" type="numeric"/>
+            <column name="name" type="string"/>
+            <column name="active" type="boolean"/>
+        </loadData>
+    </changeSet>
+
+</databaseChangeLog>
