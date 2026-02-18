@@ -1,15 +1,17 @@
 package md.utm2026.demo.web.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import md.utm2026.demo.domain.UserEntity;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserEntityDto {
 
-    private final Long id;
-    private final String userName;
-    private final String firstName;
-    private final String lastName;
-    private final String email;
-    private final String phone;
+    private Long id;
+    private String userName;
+    private String firstName;
+    private String lastName;
+    private String email;
+    private String phone;
 
     public UserEntityDto(Long id, String userName, String firstName, String lastName, String email, String phone) {
         this.id = id;
@@ -18,6 +20,12 @@ public class UserEntityDto {
         this.lastName = lastName;
         this.email = email;
         this.phone = phone;
+    }
+
+    public UserEntityDto(String userName, String firstName, String lastName) {
+        this.userName = userName;
+        this.firstName = firstName;
+        this.lastName = lastName;
     }
 
     public static UserEntityDto fromEntity(UserEntity entity) {

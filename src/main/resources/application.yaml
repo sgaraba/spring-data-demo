@@ -2,6 +2,7 @@ spring:
   jpa:
     hibernate:
       ddl-auto: validate
+    show-sql: true
   application:
     name: spring-data-demo
   liquibase:

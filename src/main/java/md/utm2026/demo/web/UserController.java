@@ -1,5 +1,7 @@
 package md.utm2026.demo.web;
 
+import md.utm2026.demo.domain.UserEntity;
+import md.utm2026.demo.repository.UserRepository;
 import md.utm2026.demo.service.UserService;
 import md.utm2026.demo.web.dto.CreateUserEntityDto;
 import md.utm2026.demo.web.dto.PageResponse;
@@ -19,13 +21,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/api/users")
 public class UserController {
 
     private final UserService userService;
+    private final UserRepository userRepository;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, UserRepository userRepository) {
         this.userService = userService;
+        this.userRepository = userRepository;
     }
 
     @GetMapping
@@ -40,28 +44,36 @@ public class UserController {
         );
     }
 
+    @GetMapping("/by-email/{email}")
+    public ResponseEntity<UserEntity> getByEmail(@PathVariable String email) {
+        return userRepository.findByEmailQuery(email)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    }
+
+
     @GetMapping("/{id}")
-    public ResponseEntity<UserEntityDto> getById(@PathVariable Long id) {
+    public ResponseEntity<UserEntity> getById(@PathVariable Long id) {
         return userService.findById(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
     @PostMapping
-    public ResponseEntity<UserEntityDto> create(@Valid @RequestBody CreateUserEntityDto user) {
-        UserEntityDto created = userService.create(user);
+    public ResponseEntity<UserEntity> create(@Valid @RequestBody CreateUserEntityDto user) {
+        UserEntity created = userService.create(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserEntityDto> update(@PathVariable Long id, @Valid @RequestBody CreateUserEntityDto user) {
+    public ResponseEntity<UserEntity> update(@PathVariable Long id, @Valid @RequestBody CreateUserEntityDto user) {
         return userService.update(id, user)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<UserEntityDto> patch(@PathVariable Long id, @RequestBody CreateUserEntityDto user) {
+    public ResponseEntity<UserEntity> patch(@PathVariable Long id, @RequestBody CreateUserEntityDto user) {
         return userService.patch(id, user)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
