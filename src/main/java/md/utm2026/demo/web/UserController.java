@@ -25,11 +25,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
     private final UserService userService;
-    private final UserRepository userRepository;
 
-    public UserController(UserService userService, UserRepository userRepository) {
+    public UserController(UserService userService) {
         this.userService = userService;
-        this.userRepository = userRepository;
     }
 
     @GetMapping
@@ -46,34 +44,34 @@ public class UserController {
 
     @GetMapping("/by-email/{email}")
     public ResponseEntity<UserEntity> getByEmail(@PathVariable String email) {
-        return userRepository.findByEmailQuery(email)
+        return userService.findByEmailQuery(email)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserEntity> getById(@PathVariable Long id) {
+    public ResponseEntity<UserEntityDto> getById(@PathVariable Long id) {
         return userService.findById(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
     @PostMapping
-    public ResponseEntity<UserEntity> create(@Valid @RequestBody CreateUserEntityDto user) {
-        UserEntity created = userService.create(user);
+    public ResponseEntity<UserEntityDto> create(@Valid @RequestBody CreateUserEntityDto user) {
+        UserEntityDto created = userService.create(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserEntity> update(@PathVariable Long id, @Valid @RequestBody CreateUserEntityDto user) {
+    public ResponseEntity<UserEntityDto> update(@PathVariable Long id, @Valid @RequestBody CreateUserEntityDto user) {
         return userService.update(id, user)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<UserEntity> patch(@PathVariable Long id, @RequestBody CreateUserEntityDto user) {
+    public ResponseEntity<UserEntityDto> patch(@PathVariable Long id, @RequestBody CreateUserEntityDto user) {
         return userService.patch(id, user)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
