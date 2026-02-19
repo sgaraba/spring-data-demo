@@ -3,13 +3,12 @@ package md.utm2026.demo.service;
 import md.utm2026.demo.domain.UserEntity;
 import md.utm2026.demo.repository.UserRepository;
 import md.utm2026.demo.web.dto.CreateUserEntityDto;
-import md.utm2026.demo.web.dto.PageResponse;
 import md.utm2026.demo.web.dto.UserEntityDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -24,27 +23,14 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public PageResponse<UserEntityDto> findAll(Pageable pageable) {
+    public Page<UserEntityDto> findAll(Pageable pageable) {
         LOGGER.info("Fetching users page={} size={}", pageable.getPageNumber(), pageable.getPageSize());
-        var page = userRepository.findAllDtos(pageable);
-        return new PageResponse<>(
-                page.getContent(),
-                page.getNumber(),
-                page.getSize(),
-                page.getTotalElements(),
-                page.getTotalPages()
-        );
+        return userRepository.findAllDtos(pageable);
     }
 
-    public Optional<UserEntityDto> findDtoById(Long id) {
-        LOGGER.info("Fetching user dto by id={}", id);
-        return userRepository.findDtoById(id);
-    }
-
-    @Transactional(readOnly = true)
-    public Optional<UserEntity> findById(Long id) {
+    public Optional<UserEntityDto> findById(Long id) {
         LOGGER.info("Fetching user by id={}", id);
-        return userRepository.findById(id);
+        return userRepository.findDtoById(id);
     }
 
     public UserEntityDto create(CreateUserEntityDto user) {
@@ -110,5 +96,9 @@ public class UserService {
         if (incoming.phone() != null) {
             entity.setPhone(incoming.phone());
         }
+    }
+
+    public Optional<UserEntity> findByEmailQuery(String email) {
+        return userRepository.findByEmailQuery(email);
     }
 }

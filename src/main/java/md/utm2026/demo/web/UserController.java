@@ -1,6 +1,7 @@
 package md.utm2026.demo.web;
 
 import md.utm2026.demo.domain.UserEntity;
+import md.utm2026.demo.repository.UserRepository;
 import md.utm2026.demo.service.UserService;
 import md.utm2026.demo.web.dto.CreateUserEntityDto;
 import md.utm2026.demo.web.dto.PageResponse;
@@ -31,18 +32,26 @@ public class UserController {
 
     @GetMapping
     public PageResponse<UserEntityDto> getAll(Pageable pageable) {
-        return userService.findAll(pageable);
+        var page = userService.findAll(pageable);
+        return new PageResponse<>(
+                page.getContent(),
+                page.getNumber(),
+                page.getSize(),
+                page.getTotalElements(),
+                page.getTotalPages()
+        );
     }
 
-   // @GetMapping("/{id}")
-    public ResponseEntity<UserEntityDto> getDtoById(@PathVariable Long id) {
-        return userService.findDtoById(id)
+    @GetMapping("/by-email/{email}")
+    public ResponseEntity<UserEntity> getByEmail(@PathVariable String email) {
+        return userService.findByEmailQuery(email)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
+
     @GetMapping("/{id}")
-    public ResponseEntity<UserEntity> getById(@PathVariable Long id) {
+    public ResponseEntity<UserEntityDto> getById(@PathVariable Long id) {
         return userService.findById(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());

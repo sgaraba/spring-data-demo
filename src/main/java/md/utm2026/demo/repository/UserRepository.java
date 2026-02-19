@@ -13,14 +13,19 @@ import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<UserEntity, Long> {
 
+    Optional<UserEntity> findByEmail(String email);
+
+    @Query(
+            value = "select * from user_entity where email=:email",
+            nativeQuery = true
+    )
+    Optional<UserEntity> findByEmailQuery(String email);
+
     @Query("""
             select new md.utm2026.demo.web.dto.UserEntityDto(
-                u.id,
                 u.userName,
                 u.firstName,
-                u.lastName,
-                u.email,
-                u.phone
+                u.lastName
             )
             from UserEntity u
             """)
