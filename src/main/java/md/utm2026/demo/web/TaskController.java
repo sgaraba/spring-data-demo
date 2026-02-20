@@ -63,6 +63,13 @@ public class TaskController {
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
+    @PostMapping("/{taskId}/tags/{tagId}")
+    public ResponseEntity<TaskEntity> addTagToTask(@PathVariable Long taskId, @PathVariable Long tagId) {
+        return taskService.addTagToTask(taskId, tagId)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    }
+
     @PostMapping
     public ResponseEntity<TaskEntityDto> create(@Valid @RequestBody CreateTaskEntityDto task) {
         TaskEntityDto created = taskService.create(task);

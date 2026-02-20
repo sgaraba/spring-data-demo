@@ -1,9 +1,11 @@
 package md.utm2026.demo.service;
 
 import jakarta.persistence.EntityManager;
+import md.utm2026.demo.domain.TagEntity;
 import md.utm2026.demo.domain.TaskEntity;
 import md.utm2026.demo.domain.TaskStatusEntity;
 import md.utm2026.demo.domain.UserEntity;
+import md.utm2026.demo.repository.TagRepository;
 import md.utm2026.demo.repository.TaskRepository;
 import md.utm2026.demo.repository.TaskStatusRepository;
 import md.utm2026.demo.repository.UserRepository;
@@ -26,17 +28,20 @@ public class TaskService {
     private final TaskRepository taskRepository;
     private final TaskStatusRepository taskStatusRepository;
     private final UserRepository userRepository;
+    private final TagRepository tagRepository;
     private final EntityManager entityManager;
 
     public TaskService(
             TaskRepository taskRepository,
             TaskStatusRepository taskStatusRepository,
             UserRepository userRepository,
+            TagRepository tagRepository,
             EntityManager entityManager
     ) {
         this.taskRepository = taskRepository;
         this.taskStatusRepository = taskStatusRepository;
         this.userRepository = userRepository;
+        this.tagRepository = tagRepository;
         this.entityManager = entityManager;
     }
 
@@ -82,6 +87,16 @@ public class TaskService {
         TaskEntity created = taskRepository.save(entity);
         return taskRepository.findDtoById(created.getId())
                 .orElseThrow(() -> new IllegalStateException("Created task not found id=" + created.getId()));
+    }
+
+    public Optional<TaskEntity> addTagToTask(Long taskId, Long tagId) {
+        LOGGER.info("Adding tag id={} to task id={}", tagId, taskId);
+        return taskRepository.findById(taskId).map(task -> {
+            TagEntity tag = tagRepository.findById(tagId)
+                    .orElseThrow(() -> new IllegalStateException("Tag not found id=" + tagId));
+            task.getTags().add(tag);
+            return taskRepository.save(task);
+        });
     }
 
     public Optional<TaskEntityDto> update(Long id, CreateTaskEntityDto incoming) {

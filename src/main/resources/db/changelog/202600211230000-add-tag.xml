@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="20260211-05-create-tag" author="esempla">
+        <createTable tableName="tag">
+            <column name="id" type="bigserial" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addUniqueConstraint
+                tableName="tag"
+                columnNames="name"
+                constraintName="uk_tag_name"/>
+    </changeSet>
+
+    <changeSet id="20260211-06-create-task-tag" author="esempla">
+        <createTable tableName="task_tag">
+            <column name="task_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="tag_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addPrimaryKey
+                tableName="task_tag"
+                columnNames="task_id, tag_id"
+                constraintName="pk_task_tag"/>
+
+        <addForeignKeyConstraint
+                baseTableName="task_tag"
+                baseColumnNames="task_id"
+                referencedTableName="task"
+                referencedColumnNames="id"
+                constraintName="fk_task_tag_task"/>
+
+        <addForeignKeyConstraint
+                baseTableName="task_tag"
+                baseColumnNames="tag_id"
+                referencedTableName="tag"
+                referencedColumnNames="id"
+                constraintName="fk_task_tag_tag"/>
+    </changeSet>
+
+    <changeSet id="20260211-07-load-tag-data" author="esempla">
+        <loadData
+                file="classpath:/db/changelog/data/tag.csv"
+                separator=","
+                tableName="tag"
+                encoding="UTF-8"
+                quotchar="&quot;">
+            <column name="id" type="numeric"/>
+            <column name="name" type="string"/>
+        </loadData>
+    </changeSet>
+
+    <changeSet id="20260211-08-load-task-tag-data" author="esempla">
+        <loadData
+                file="classpath:/db/changelog/data/task_tag.csv"
+                separator=","
+                tableName="task_tag"
+                encoding="UTF-8"
+                quotchar="&quot;">
+            <column name="task_id" type="numeric"/>
+            <column name="tag_id" type="numeric"/>
+        </loadData>
+    </changeSet>
+
+</databaseChangeLog>
