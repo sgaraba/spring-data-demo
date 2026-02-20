@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.Collection;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<UserEntity, Long> {
@@ -45,11 +46,20 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
             """)
     Optional<UserEntityDto> findDtoById(@Param("id") Long id);
 
-//    @EntityGraph(
-//            attributePaths = {
-//                    "tasks",
-//                    "tasks.taskStatus",
-//            }
-//    )
-//    Optional<UserEntity> findById(Long id);
+    @EntityGraph(
+            attributePaths = {
+                    "tasks",
+                    "tasks.taskStatus",
+            }
+    )
+    Optional<UserEntity> findById(Long id);
+
+    @EntityGraph(
+            attributePaths = {
+                    "tasks",
+                    "tasks.taskStatus",
+            }
+    )
+    Page<UserEntity> findAll(Pageable page);
+
 }

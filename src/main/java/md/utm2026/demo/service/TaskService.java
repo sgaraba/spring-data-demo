@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import md.utm2026.demo.web.dto.TaskEntityDto;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -35,21 +36,26 @@ public class TaskService {
         this.userRepository = userRepository;
     }
 
+    @Transactional(readOnly=true)
     public Page<TaskEntity> findAll(Pageable pageable) {
         LOGGER.info("Fetching tasks page={} size={}", pageable.getPageNumber(), pageable.getPageSize());
+        // call external API
         return taskRepository.findAll(pageable);
     }
 
+    @Transactional
     public Optional<TaskEntityDto> findDtoById(Long id) {
         LOGGER.info("Fetching task dto by id={}", id);
         return taskRepository.findDtoById(id);
     }
 
+    @Transactional
     public Optional<TaskEntity> findById(Long id) {
         LOGGER.info("Fetching task by id={}", id);
         return taskRepository.findById(id);
     }
 
+    @Transactional
     public TaskEntityDto create(CreateTaskEntityDto task) {
         LOGGER.info("Creating task title={}", task.title());
         TaskEntity entity = new TaskEntity();
@@ -59,6 +65,7 @@ public class TaskService {
                 .orElseThrow(() -> new IllegalStateException("Created task not found id=" + created.getId()));
     }
 
+    @Transactional
     public Optional<TaskEntityDto> update(Long id, CreateTaskEntityDto incoming) {
         LOGGER.info("Updating task id={}", id);
         return taskRepository.findById(id).map(existing -> {
@@ -69,6 +76,7 @@ public class TaskService {
         });
     }
 
+    @Transactional
     public Optional<TaskEntityDto> patch(Long id, CreateTaskEntityDto incoming) {
         LOGGER.info("Patching task id={}", id);
         return taskRepository.findById(id).map(existing -> {
@@ -79,6 +87,7 @@ public class TaskService {
         });
     }
 
+    @Transactional
     public boolean delete(Long id) {
         LOGGER.info("Deleting task id={}", id);
         if (!taskRepository.existsById(id)) {
@@ -111,12 +120,14 @@ public class TaskService {
         }
     }
 
-    private TaskStatusEntity resolveTaskStatus(Long taskStatusId) {
+    @Transactional
+    public TaskStatusEntity resolveTaskStatus(Long taskStatusId) {
         return taskStatusRepository.findById(taskStatusId)
                 .orElseThrow(() -> new IllegalStateException("Task status not found id=" + taskStatusId));
     }
 
-    private UserEntity resolveAssignee(Long assigneeId) {
+    @Transactional
+    public UserEntity resolveAssignee(Long assigneeId) {
         if (assigneeId == null) {
             return null;
         }

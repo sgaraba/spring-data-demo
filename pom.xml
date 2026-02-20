@@ -56,12 +56,10 @@
 			<scope>test</scope>
 		</dependency>
 
-
-<!--		<dependency>-->
-<!--			<groupId>tools.jackson.datatype</groupId>-->
-<!--			<artifactId>jackson-datatype-hibernate7</artifactId>-->
-<!--		</dependency>-->
-
+		<dependency>
+			<groupId>tools.jackson.datatype</groupId>
+			<artifactId>jackson-datatype-hibernate7</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>
