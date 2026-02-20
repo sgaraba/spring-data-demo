@@ -45,4 +45,12 @@ public interface TaskRepository extends JpaRepository<TaskEntity, Long> {
     Optional<TaskEntityDto> findDtoById(@Param("id") Long id);
 
     List<TaskEntity> findAllByAssignee_Id(Long id);
+
+    @EntityGraph(
+            attributePaths={
+                    "taskStatus",
+                    "tags"
+            }
+    )
+    Optional<TaskEntity> findById(Long id);
 }

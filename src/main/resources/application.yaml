@@ -2,7 +2,7 @@ spring:
   jpa:
     hibernate:
       ddl-auto: validate
-    show-sql: false
+    show-sql: true
     open-in-view: false
   application:
     name: spring-data-demo
