@@ -1,5 +1,6 @@
 package md.utm2026.demo.service;
 
+import jakarta.persistence.EntityManager;
 import md.utm2026.demo.domain.TaskEntity;
 import md.utm2026.demo.domain.TaskStatusEntity;
 import md.utm2026.demo.domain.UserEntity;
@@ -14,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import md.utm2026.demo.web.dto.TaskEntityDto;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -24,15 +26,38 @@ public class TaskService {
     private final TaskRepository taskRepository;
     private final TaskStatusRepository taskStatusRepository;
     private final UserRepository userRepository;
+    private final EntityManager entityManager;
 
     public TaskService(
             TaskRepository taskRepository,
             TaskStatusRepository taskStatusRepository,
-            UserRepository userRepository
+            UserRepository userRepository,
+            EntityManager entityManager
     ) {
         this.taskRepository = taskRepository;
         this.taskStatusRepository = taskStatusRepository;
         this.userRepository = userRepository;
+        this.entityManager = entityManager;
+    }
+
+    public List<TaskEntityDto> searchByTitleWithEntityManager(String titleFragment) {
+        LOGGER.info("Searching tasks with EntityManager titleFragment={}", titleFragment);
+        return entityManager.createQuery("""
+                        select new md.utm2026.demo.web.dto.TaskEntityDto(
+                            t.id,
+                            t.title,
+                            t.description,
+                            ts.name,
+                            a.userName
+                        )
+                        from TaskEntity t
+                        join t.taskStatus ts
+                        left join t.assignee a
+                        where lower(t.title) like lower(concat('%', :titleFragment, '%'))
+                        order by t.id
+                        """, TaskEntityDto.class)
+                .setParameter("titleFragment", titleFragment)
+                .getResultList();
     }
 
     public Page<TaskEntity> findAll(Pageable pageable) {
