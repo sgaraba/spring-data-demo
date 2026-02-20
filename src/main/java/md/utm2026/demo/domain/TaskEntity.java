@@ -1,10 +1,22 @@
 package md.utm2026.demo.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "task")
@@ -14,7 +26,6 @@ public class TaskEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Version
     @Column(nullable = false)
     private String title;
 
@@ -29,6 +40,15 @@ public class TaskEntity {
     @JoinColumn(name = "assignee_id")
     @JsonIgnoreProperties(value = {"tasks"}, allowSetters = true)
     private UserEntity assignee;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "task_tag",
+            joinColumns = @JoinColumn(name = "task_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id")
+    )
+    @JsonIgnoreProperties(value = {"tasks"}, allowSetters = true)
+    private Set<TagEntity> tags = new HashSet<>();
 
     public TaskEntity() {
     }
@@ -67,6 +87,14 @@ public class TaskEntity {
 
     public void setAssignee(UserEntity assignee) {
         this.assignee = assignee;
+    }
+
+    public Set<TagEntity> getTags() {
+        return tags;
+    }
+
+    public void setTags(Set<TagEntity> tags) {
+        this.tags = tags;
     }
 
     @Override

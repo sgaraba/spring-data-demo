@@ -1,8 +1,11 @@
 package md.utm2026.demo.service;
 
+import jakarta.persistence.EntityManager;
+import md.utm2026.demo.domain.TagEntity;
 import md.utm2026.demo.domain.TaskEntity;
 import md.utm2026.demo.domain.TaskStatusEntity;
 import md.utm2026.demo.domain.UserEntity;
+import md.utm2026.demo.repository.TagRepository;
 import md.utm2026.demo.repository.TaskRepository;
 import md.utm2026.demo.repository.TaskStatusRepository;
 import md.utm2026.demo.repository.UserRepository;
@@ -13,8 +16,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import md.utm2026.demo.web.dto.TaskEntityDto;
-import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -25,37 +28,58 @@ public class TaskService {
     private final TaskRepository taskRepository;
     private final TaskStatusRepository taskStatusRepository;
     private final UserRepository userRepository;
+    private final TagRepository tagRepository;
+    private final EntityManager entityManager;
 
     public TaskService(
             TaskRepository taskRepository,
             TaskStatusRepository taskStatusRepository,
-            UserRepository userRepository
+            UserRepository userRepository,
+            TagRepository tagRepository,
+            EntityManager entityManager
     ) {
         this.taskRepository = taskRepository;
         this.taskStatusRepository = taskStatusRepository;
         this.userRepository = userRepository;
+        this.tagRepository = tagRepository;
+        this.entityManager = entityManager;
     }
 
-    @Transactional(readOnly=true)
+    public List<TaskEntityDto> searchByTitleWithEntityManager(String titleFragment) {
+        LOGGER.info("Searching tasks with EntityManager titleFragment={}", titleFragment);
+        return entityManager.createQuery("""
+                        select new md.utm2026.demo.web.dto.TaskEntityDto(
+                            t.id,
+                            t.title,
+                            t.description,
+                            ts.name,
+                            a.userName
+                        )
+                        from TaskEntity t
+                        join t.taskStatus ts
+                        left join t.assignee a
+                        where lower(t.title) like lower(concat('%', :titleFragment, '%'))
+                        order by t.id
+                        """, TaskEntityDto.class)
+                .setParameter("titleFragment", titleFragment)
+                .getResultList();
+    }
+
     public Page<TaskEntity> findAll(Pageable pageable) {
         LOGGER.info("Fetching tasks page={} size={}", pageable.getPageNumber(), pageable.getPageSize());
-        // call external API
         return taskRepository.findAll(pageable);
     }
 
-    @Transactional
     public Optional<TaskEntityDto> findDtoById(Long id) {
         LOGGER.info("Fetching task dto by id={}", id);
         return taskRepository.findDtoById(id);
     }
 
-    @Transactional
     public Optional<TaskEntity> findById(Long id) {
         LOGGER.info("Fetching task by id={}", id);
         return taskRepository.findById(id);
     }
 
-    @Transactional
     public TaskEntityDto create(CreateTaskEntityDto task) {
         LOGGER.info("Creating task title={}", task.title());
         TaskEntity entity = new TaskEntity();
@@ -65,7 +89,16 @@ public class TaskService {
                 .orElseThrow(() -> new IllegalStateException("Created task not found id=" + created.getId()));
     }
 
-    @Transactional
+    public Optional<TaskEntity> addTagToTask(Long taskId, Long tagId) {
+        LOGGER.info("Adding tag id={} to task id={}", tagId, taskId);
+        return taskRepository.findById(taskId).map(task -> {
+            TagEntity tag = tagRepository.findById(tagId)
+                    .orElseThrow(() -> new IllegalStateException("Tag not found id=" + tagId));
+            task.getTags().add(tag);
+            return taskRepository.save(task);
+        });
+    }
+
     public Optional<TaskEntityDto> update(Long id, CreateTaskEntityDto incoming) {
         LOGGER.info("Updating task id={}", id);
         return taskRepository.findById(id).map(existing -> {
@@ -76,7 +109,6 @@ public class TaskService {
         });
     }
 
-    @Transactional
     public Optional<TaskEntityDto> patch(Long id, CreateTaskEntityDto incoming) {
         LOGGER.info("Patching task id={}", id);
         return taskRepository.findById(id).map(existing -> {
@@ -87,7 +119,6 @@ public class TaskService {
         });
     }
 
-    @Transactional
     public boolean delete(Long id) {
         LOGGER.info("Deleting task id={}", id);
         if (!taskRepository.existsById(id)) {
@@ -120,14 +151,12 @@ public class TaskService {
         }
     }
 
-    @Transactional
-    public TaskStatusEntity resolveTaskStatus(Long taskStatusId) {
+    private TaskStatusEntity resolveTaskStatus(Long taskStatusId) {
         return taskStatusRepository.findById(taskStatusId)
                 .orElseThrow(() -> new IllegalStateException("Task status not found id=" + taskStatusId));
     }
 
-    @Transactional
-    public UserEntity resolveAssignee(Long assigneeId) {
+    private UserEntity resolveAssignee(Long assigneeId) {
         if (assigneeId == null) {
             return null;
         }
