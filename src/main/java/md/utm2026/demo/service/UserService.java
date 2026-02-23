@@ -1,6 +1,7 @@
 package md.utm2026.demo.service;
 
 import md.utm2026.demo.domain.UserEntity;
+import md.utm2026.demo.repository.UserJdbcClientRepository;
 import md.utm2026.demo.repository.UserRepository;
 import md.utm2026.demo.web.dto.CreateUserEntityDto;
 import md.utm2026.demo.web.dto.UserEntityDto;
@@ -18,9 +19,11 @@ public class UserService {
     private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
 
     private final UserRepository userRepository;
+    private final UserJdbcClientRepository userJdbcClientRepository;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, UserJdbcClientRepository userJdbcClientRepository) {
         this.userRepository = userRepository;
+        this.userJdbcClientRepository = userJdbcClientRepository;
     }
 
     public Page<UserEntityDto> findAllDto(Pageable pageable) {
@@ -110,5 +113,10 @@ public class UserService {
 
     public Optional<UserEntity> findByEmailQuery(String email) {
         return userRepository.findByEmailQuery(email);
+    }
+
+    public Optional<UserEntityDto> findDtoByEmailJdbcClient(String email) {
+        LOGGER.info("Fetching user with JdbcClient email={}", email);
+        return userJdbcClientRepository.findDtoByEmail(email);
     }
 }

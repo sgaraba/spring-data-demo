@@ -70,6 +70,13 @@ public class UserController {
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
+    @GetMapping("/by-email-jdbc/{email}")
+    public ResponseEntity<UserEntityDto> getByEmailJdbc(@PathVariable String email) {
+        return userService.findDtoByEmailJdbcClient(email)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<UserEntity> getById(@PathVariable Long id) {
         return userService.findById(id)
