@@ -8,7 +8,7 @@ services:
     ports:
       - "5440:5432"
     volumes:
-      - ./postgresql:/var/lib/postgresql/data
+      - ./target/postgresql:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U task -d taskdb"]
       interval: 5s
@@ -19,7 +19,7 @@ services:
     # Option A (Dockerfile build): uncomment build and comment image
     build: .
     # Option B (Jib): comment build and use image after mvn jib:dockerBuild
-    # image: ghcr.io/company/task-api:dev
+    #image: ghcr.io/sgaraba/task-api:dev
     depends_on:
       postgres:
         condition: service_healthy
