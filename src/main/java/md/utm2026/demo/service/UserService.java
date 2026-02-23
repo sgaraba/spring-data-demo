@@ -23,12 +23,22 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public Page<UserEntityDto> findAll(Pageable pageable) {
+    public Page<UserEntityDto> findAllDto(Pageable pageable) {
         LOGGER.info("Fetching users page={} size={}", pageable.getPageNumber(), pageable.getPageSize());
         return userRepository.findAllDtos(pageable);
     }
 
-    public Optional<UserEntityDto> findById(Long id) {
+    public Page<UserEntity> findAll(Pageable pageable) {
+        LOGGER.info("Fetching users page={} size={}", pageable.getPageNumber(), pageable.getPageSize());
+        return userRepository.findAll(pageable);
+    }
+
+    public Optional<UserEntity> findById(Long id) {
+        LOGGER.info("Fetching user by id={}", id);
+        return userRepository.findById(id);
+    }
+
+    public Optional<UserEntityDto> findDtoById(Long id) {
         LOGGER.info("Fetching user by id={}", id);
         return userRepository.findDtoById(id);
     }

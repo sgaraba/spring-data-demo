@@ -14,10 +14,13 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import md.utm2026.demo.web.dto.TaskEntityDto;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/tasks")
@@ -48,10 +51,21 @@ public class TaskController {
 //                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
 //    }
 
+    @GetMapping("/search-em")
+    public List<TaskEntityDto> searchByTitleWithEntityManager(@RequestParam("title") String title) {
+        return taskService.searchByTitleWithEntityManager(title);
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<TaskEntity> getById(@PathVariable Long id) {
         return taskService.findById(id)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    }
+
+    @PostMapping("/{taskId}/tags/{tagId}")
+    public ResponseEntity<TaskEntity> addTagToTask(@PathVariable Long taskId, @PathVariable Long tagId) {
+        return taskService.addTagToTask(taskId, tagId)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
