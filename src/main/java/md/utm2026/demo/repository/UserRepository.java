@@ -2,6 +2,7 @@ package md.utm2026.demo.repository;
 
 import md.utm2026.demo.domain.UserEntity;
 import md.utm2026.demo.web.dto.UserEntityDto;
+import md.utm2026.demo.web.dto.UserEntityProjection;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -21,6 +22,12 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
             nativeQuery = true
     )
     Optional<UserEntity> findByEmailQuery(String email);
+
+    @Query(
+            value = "select first_name, last_name  from user_entity where email=:email",
+            nativeQuery = true
+    )
+    Optional<UserEntityProjection> findByEmailQueryProjection(String email);
 
     @Query("""
             select new md.utm2026.demo.web.dto.UserEntityDto(
