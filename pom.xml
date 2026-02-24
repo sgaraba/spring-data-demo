@@ -75,9 +75,9 @@
                         <image>eclipse-temurin:25.0.2_10-jre</image>
                     </from>
                     <to>
-                        <image>ghcr.io/sgaraba/task-api</image>
+                        <image>sgaraba/task-api</image>
                         <tags>
-                            <tag>dev</tag>
+                            <tag>dev-v4</tag>
                         </tags>
                     </to>
                     <container>

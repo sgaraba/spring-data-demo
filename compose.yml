@@ -8,7 +8,14 @@ services:
     ports:
       - "5440:5432"
     volumes:
-      - ./target/postgresql:/var/lib/postgresql/data
+      - /target/postgresql:/var/lib/postgresql/data
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "10"
+    networks:
+      - network
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U task -d taskdb"]
       interval: 5s
@@ -17,9 +24,9 @@ services:
 
   app:
     # Option A (Dockerfile build): uncomment build and comment image
-    build: .
+   # build: .
     # Option B (Jib): comment build and use image after mvn jib:dockerBuild
-    #image: ghcr.io/sgaraba/task-api:dev
+    image: sgaraba/task-api:dev-v4
     depends_on:
       postgres:
         condition: service_healthy
@@ -31,3 +38,18 @@ services:
       SPRING_LIQUIBASE_ENABLED: "true"
     ports:
       - "8080:8080"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "10"
+    networks:
+      - network
+
+networks:
+  network:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.29.1.0/24
